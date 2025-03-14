@@ -7,7 +7,7 @@ public class StringRandomizer {
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     public static String getRandomString(int length) {
-        Random random = new Random();
+        Random random = new Random() ;
         String result = " ";
         for (int i = 0; i < length; i++) {
             int c = random.nextInt(CHARACTERS.length());
