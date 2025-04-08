@@ -105,45 +105,49 @@ public class Main2 {
             System.out.println(s);
         }
 
-            String fileName = "C:\\Users\\gheor\\IdeaProjects\\lLab2\\src\\ro\\ulbs\\paradigme\\lab4\\input.txt";
-            File file = new File(fileName);
+        String fileName = "input.txt";
 
-            if (!file.exists()) {
-                System.out.println("Fișierul NU există! Verifică calea: " + file.getAbsolutePath());
-                return;
-            }
+        File file = new File(fileName);
+        System.out.println("Calea absolută căutată: " + file.getAbsolutePath());
+        if (!file.exists()) {
+            System.out.println("Fișierul NU există! Asigură-te că 'input.txt' este în același director cu programul.");
+            return;
+        }
 
-            try (Scanner sc = new Scanner(new FileInputStream(file))) {
-                while (sc.hasNextLine()) {
-                    String[] data = sc.nextLine().split(" ");
-                    String nume = data[0] + " " + data[1];
-                    String grupa = data[2];
-                    List<Integer> note = new ArrayList<>();
-                    for (int i = 3; i < data.length; i++) {
+        try (Scanner sc = new Scanner(file)) {
+            while (sc.hasNextLine()) {
+                String[] data = sc.nextLine().split(" ");
+                if (data.length < 3) continue; // Evităm erori dacă linia e incorectă
+
+                String nume = data[0] + " " + data[1];
+                String grupa = data[2];
+                List<Integer> note = new ArrayList<>();
+
+                for (int i = 3; i < data.length; i++) {
+                    try {
                         note.add(Integer.parseInt(data[i]));
+                    } catch (NumberFormatException e) {
+                        System.out.println("Eroare la citirea notei: " + data[i]);
                     }
-                    studenti.add(new Student(nume, grupa, note));
                 }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
 
-            // Afisare studenti cititi
-            System.out.println("Studentii cititi din fisier:");
-            for (Student s : studenti) {
-                System.out.println(s);
+                studenti.add(new Student(nume, grupa, note));
             }
+        } catch (FileNotFoundException e) {
+            System.out.println("Eroare: Fișierul nu a fost găsit.");
+        }
 
-            // Map pentru numărarea aparițiilor
-            Map<Student, Integer> studentCount = new HashMap<>();
-            for (Student s : studenti) {
-                studentCount.put(s, studentCount.getOrDefault(s, 0) + 1);
-            }
+        // Creare Map pentru numărarea aparițiilor
+        Map<Student, Integer> mapStudenti = new HashMap<>();
 
-            // Afisare numar aparitii
-            System.out.println("\nNumăr apariții pentru fiecare student:");
-            for (Map.Entry<Student, Integer> entry : studentCount.entrySet()) {
-                System.out.println(entry.getKey() + " - Apariții: " + entry.getValue());
-            }
+        for (Student s : studenti) {
+            mapStudenti.put(s, mapStudenti.getOrDefault(s, 0) + 1);
+        }
+
+        // Afișare rezultate
+        System.out.println("Număr apariții studenți:");
+        for (Map.Entry<Student, Integer> entry : mapStudenti.entrySet()) {
+            System.out.println(entry.getKey() + " → " + entry.getValue() + " apariții");
+        }
     }
 }

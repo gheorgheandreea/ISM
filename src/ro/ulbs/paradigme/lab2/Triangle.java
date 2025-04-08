@@ -14,11 +14,21 @@ public class Triangle extends Form {
     }
     @Override
     public float getArea(){
-        return (Height*base)/2;
+        return (Height*base)/2.0F;
     }
     @Override
     public String toString(){
         return super.toString()+" And Triangle area is "+getArea();
     }
 
+
+    public String getcolor(){
+        return this.getColor();
+  }
+    public boolean equals(Triangle obj) {
+            if(this.getArea()==obj.getArea() && this.getcolor().equals(obj.getcolor())){
+            return true;
+        }
+        else return false;
+    }
 }
