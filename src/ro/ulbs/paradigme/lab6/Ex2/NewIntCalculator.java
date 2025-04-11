@@ -18,6 +18,10 @@ public class NewIntCalculator extends ACalculator{
         this.state = (Integer)this.state * n;
         return this;
     }
+    public NewIntCalculator divide(int n){
+        this.state = (Integer)this.state / n;
+        return this;
+    }
 
     @Override
     public void init() {

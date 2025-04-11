@@ -18,6 +18,10 @@ public class DoubleCalculator extends ACalculator {
         this.state = (Double)this.state * n;
         return this;
     }
+    public DoubleCalculator divide(double n){
+        this.state = (Double)this.state / n;
+        return this;
+    }
     @Override
     public void init() {
         state=0;
