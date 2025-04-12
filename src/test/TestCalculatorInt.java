@@ -70,5 +70,6 @@ public class TestCalculatorInt {
     @Test
     public void testDivideBy0(){
         Assertions.assertThrows(ArithmeticException.class, () -> {calculator.divide(0);});
+        Assertions.assertThrows(ArithmeticException.class, () -> {calculator1.divide(0);});
     }
 }
