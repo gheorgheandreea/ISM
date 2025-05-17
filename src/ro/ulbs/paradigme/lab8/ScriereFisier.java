@@ -12,90 +12,74 @@ import java.util.TreeMap;
 
 public class ScriereFisier {
     public static void main(String[] args) {
-        // Crearea unui nou workbook XLSX
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Sheet1");
-
-        // Datele pentru tabel
         Map<String, Object[]> data = new TreeMap<String, Object[]>();
-        data.put("1", new Object[] {"First Name", "Last Name", "D", "E", "F", "MAX", "AVERAGE"});
-        data.put("2", new Object[] {"Amit", "Shukla", 9, 8, 7, 5});
-        data.put("3", new Object[] {"Lokesh", "Gupta", 8, 9, 6, 7});
-        data.put("4", new Object[] {"John", "Adwards", 8, 8, 7, 6});
-        data.put("5", new Object[] {"Brian", "Schultz", 7, 6, 8, 9});
-
-        // Creare stil pentru header - fundal verde și font bold
+        data.put("2", new Object[] {"Amit", "Shukla", 9,8,7,5});
+        data.put("3", new Object[] {"Lokesh", "Gupta", 8,9,6,7});
+        data.put("4", new Object[] {"John", "Adwards", 8,8,7,6 });
+        data.put("5", new Object[] {"Brian", "Schultz", 7,6,8,9});
         XSSFFont headerFont = workbook.createFont();
         headerFont.setBold(true);
-
+        headerFont.setItalic(false);
         XSSFCellStyle headerStyle = workbook.createCellStyle();
         headerStyle.setFont(headerFont);
         headerStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-        // Creare stil pentru coloanele G și H - fundal galben
+        headerFont= workbook.createFont();
+        headerFont.setColor(IndexedColors.AUTOMATIC.getIndex());
+        headerFont.setBold(false);
+        headerFont.setItalic(true);
         XSSFCellStyle yellowStyle = workbook.createCellStyle();
-        yellowStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+        yellowStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
         yellowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
-        // Scrie datele în fișier
+        yellowStyle.setFont(headerFont);
         int rownum = 0;
-        for (String key : data.keySet()) {
-            Row row = sheet.createRow(rownum++);
-            Object[] objArr = data.get(key);
+        Row row = sheet.createRow(rownum++);
+        String expression="";
             int cellnum = 0;
-
-            for (Object obj : objArr) {
-                Cell cell = row.createCell(cellnum++);
-
-                // Aplică stilul de header pentru primul rând
-                if (rownum == 1) {
-                    cell.setCellStyle(headerStyle);
-                }
-
-                if (obj instanceof String) {
-                    cell.setCellValue((String) obj);
-                } else if (obj instanceof Integer) {
-                    cell.setCellValue((Integer) obj);
-                }
-            }
-
-            // Adaugă formulele pentru coloanele G și H, începând de la al doilea rând
-            if (rownum > 1) {
-                // Adaugă formula MAX pentru coloana G
-                Cell cellG = row.createCell(6);
-                cellG.setCellFormula("MAX(D" + rownum + ":F" + rownum + ")");
-                cellG.setCellStyle(yellowStyle);
-
-                // Adaugă formula AVERAGE pentru coloana H
-                Cell cellH = row.createCell(7);
-                cellH.setCellFormula("AVERAGE(D" + rownum + ":F" + rownum + ")");
-                cellH.setCellStyle(yellowStyle);
-            } else {
-                // Aplică stilul header pentru celulele G și H din primul rând
-                Cell cellG = row.createCell(6);
-                cellG.setCellValue("MAX");
-                cellG.setCellStyle(headerStyle);
-
-                Cell cellH = row.createCell(7);
-                cellH.setCellValue("AVERAGE");
-                cellH.setCellStyle(headerStyle);
-            }
+            String[] headers={"Name","Surname","Grade 1","Grade 2","Grade 2","Grade 4","Max","Average"};
+        for (String header : headers) {
+            Cell cell = row.createCell(cellnum++);
+            cell.setCellValue(header);
+            cell.setCellStyle(headerStyle);
         }
+        int rowNum = 1;
+        for (Map.Entry<String, Object[]> entry : data.entrySet()) {
+            Row row1 = sheet.createRow(rowNum);
+            Object[] values = entry.getValue();
+            int colNum = 0;
+            for (Object val : values) {
+                Cell cell = row1.createCell(colNum++);
+                if (val instanceof String) {
+                    cell.setCellValue((String) val);
+                } else if (val instanceof Integer) {
+                    cell.setCellValue((Integer) val);
+                }
+            }
+            String rowExcel = String.valueOf(rowNum + 1); // rândul în Excel (începe de la 1)
+            String maxFormula = "MAX(C" + rowExcel + ":F" + rowExcel + ")";
+            Cell maxCell = row1.createCell(6);
+            maxCell.setCellFormula(maxFormula);
+            maxCell.setCellStyle(yellowStyle);
 
-        // Ajustează lățimea coloanelor automat
-        for (int i = 0; i < 8; i++) {
+            String avgFormula = "AVERAGE(C" + rowExcel + ":F" + rowExcel + ")";
+            Cell avgCell = row1.createCell(7);
+            avgCell.setCellFormula(avgFormula);
+            avgCell.setCellStyle(yellowStyle);
+
+            rowNum++;
+    }
+        for (int i = 0; i < headers.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
-        // Salvează workbook-ul în fișier
-        try {
-            FileOutputStream out = new FileOutputStream("output8.xlsx");
+        try (FileOutputStream out = new FileOutputStream("output8.xlsx")) {
             workbook.write(out);
-            out.close();
-            System.out.println("Fișierul Excel a fost creat cu succes!");
+            workbook.close();
+            System.out.println("Fișierul output8.xlsx a fost generat cu succes!");
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-}
+}}
